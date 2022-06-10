@@ -1,0 +1,15 @@
+<div class="d-flex">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills" orientation="vertical">
+    <li ngbNavItem="home">
+      <img [src]="logoSrc">
+    </li>
+    <li ngbNavItem="contacts">
+      <a ngbNavLink>Contacts</a>
+      <ng-template ngbNavContent>
+        <app-contact-container></app-contact-container>
+      </ng-template>
+    </li>
+  </ul>
+
+  <div [ngbNavOutlet]="nav" class="ms-4"></div>
+</div>
