@@ -2,7 +2,7 @@ import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import { SortEvent } from '../interfaces/sort-event';
 import { Contact } from '../shared/models/contact.model';
 
-export type SortColumn = keyof Contact | '';
+export type SortColumn = 'firstName' | 'lastName' | '';
 export type SortDirection = 'asc' | 'desc' | '';
 const rotate: { [key: string]: SortDirection } = { 'asc': 'desc', 'desc': '', '': 'asc' };
 
