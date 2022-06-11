@@ -1,8 +1,10 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { SortableDirective } from 'src/app/directives/sortable.directive';
 import { SortEvent } from 'src/app/interfaces/sort-event';
 import { CONTACTS } from 'src/app/shared/mock-contacts';
 import { CommonService } from 'src/app/shared/utils/common.service';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-contact-table',
@@ -10,8 +12,14 @@ import { CommonService } from 'src/app/shared/utils/common.service';
   styleUrls: ['./contact-table.component.css']
 })
 export class ContactTableComponent implements OnInit {
+  faFilter = faFilter;
+
   contacts = CONTACTS;
   @ViewChildren(SortableDirective) headers: QueryList<SortableDirective> | undefined;
+
+  filterForm = new FormGroup({
+    "filter": new FormControl(null)
+  });
 
   constructor(private commonService: CommonService) { }
 
@@ -36,5 +44,15 @@ export class ContactTableComponent implements OnInit {
         return direction === 'asc' ? res : -res;
       });
     }
+  }
+
+  onFilter() {
+    const filterVal = this.filterForm.get('filter')!.value;
+    this.contacts = filterVal ? CONTACTS.filter(contact => contact.lastName.includes(this.filterForm.get('filter')!.value)) : CONTACTS;
+  }
+
+  onClear() {
+    this.filterForm.reset();
+    this.onFilter();
   }
 }

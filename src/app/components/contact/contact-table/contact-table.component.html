@@ -1,16 +1,18 @@
-<form>
+<form novalidate [formGroup]="filterForm">
   <div class="mb-3 row">
     <div class="col-6">
       <div class="row">
         <label for="table-filtering-search" class="col-3 col-form-label">Filter by Last Name</label>
         <div class="col-3">
-          <input id="table-filtering-search" class="form-control" type="text">
+          <input id="table-filtering-search" class="form-control" type="text" formControlName="filter">
         </div>
         <div class="col">
-          <button id="table-filtering-filter" class="form-control" title="Filter">Filter</button>
+          <button id="table-filtering-filter" class="form-control" title="Filter" (click)="onFilter()">
+            <fa-icon [icon]="faFilter"></fa-icon>
+          </button>
         </div>
         <div class="col">
-          <button id="table-filtering-clear" class="form-control" title="Clear">Clear</button>
+          <button id="table-filtering-clear" class="form-control" title="Clear Filter" (click)="onClear()">Clear Filter</button>
         </div>
       </div>
     </div>
