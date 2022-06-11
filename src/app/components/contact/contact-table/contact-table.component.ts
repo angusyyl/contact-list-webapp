@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Contact } from 'src/app/models/contact.model';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { SortableDirective } from 'src/app/directives/sortable.directive';
+import { SortEvent } from 'src/app/interfaces/sort-event';
+import { CONTACTS } from 'src/app/shared/mock-contacts';
+import { CommonService } from 'src/app/shared/utils/common.service';
 
 @Component({
   selector: 'app-contact-table',
@@ -7,48 +10,31 @@ import { Contact } from 'src/app/models/contact.model';
   styleUrls: ['./contact-table.component.css']
 })
 export class ContactTableComponent implements OnInit {
+  contacts = CONTACTS;
+  @ViewChildren(SortableDirective) headers: QueryList<SortableDirective> | undefined;
 
-  contacts: Contact[] = [
-    {
-      id: 1,
-      firstName: 'Paul',
-      lastName: 'SMITH',
-      email: 'paulsmithtest@gmail.com',
-      phone: '+440123456789'
-    },
-    {
-      id: 2,
-      firstName: 'Jack',
-      lastName: 'JONES',
-      email: 'jackjonestest@gmail.com',
-      phone: '+44235131565462'
-    },
-    {
-      id: 3,
-      firstName: 'Ava',
-      lastName: 'DAVIES',
-      email: 'avadaviestest@gmail.com',
-      phone: '+440123456789'
-    },
-    {
-      id: 4,
-      firstName: 'Hong',
-      lastName: 'WILLIAMS',
-      email: 'hongwilliamstest@gmail.com',
-      phone: '+443212135154'
-    },
-    {
-      id: 5,
-      firstName: 'Ellie',
-      lastName: 'TAYLOR',
-      email: 'ellietaylortest@gmail.com',
-      phone: '+440203484512'
-    }
-  ];
-
-  constructor() { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
   }
 
+  onSort({ column, direction }: SortEvent) {
+
+    // resetting other headers
+    this.headers!.forEach(header => {
+      if (header.sortable !== column) {
+        header.direction = '';
+      }
+    });
+
+    // sorting contacts
+    if (direction === '' || column === '') {
+      this.contacts = CONTACTS;
+    } else {
+      this.contacts = [...CONTACTS].sort((a, b) => {
+        const res = this.commonService.compare(a[column], b[column]);
+        return direction === 'asc' ? res : -res;
+      });
+    }
+  }
 }
