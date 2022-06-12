@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create Contact</h4>
+</div>
+<div class="modal-body">
+  <form [formGroup]="addForm">
+    <input type="text" placeholder="First Name" formControlName="firstName" class="form-control mt-3" />
+    <div *ngIf="this.addForm.get('firstName')!.hasError('required') && this.isFormSubmitted" class="text-warning">
+      First Name is required
+    </div>
+    <input type="text" placeholder="Last Name" formControlName="lastName" class="form-control mt-3" />
+    <div *ngIf="this.addForm.get('lastName')!.hasError('required') && this.isFormSubmitted" class="text-warning">
+      Last Name is required
+    </div>
+    <input type="text" placeholder="Email" formControlName="email" class="form-control mt-3" />
+    <div *ngIf="this.addForm.get('email')!.hasError('required') &&  this.isFormSubmitted" class="text-warning">
+      Email is required</div>
+    <div *ngIf="this.addForm.get('email')!.hasError('email') &&  this.isFormSubmitted" class="text-warning">
+      This is not in a valid email format</div>
+    <input type="text" placeholder="Phone number" formControlName="phone" class="form-control mt-3" />
+    <div *ngIf="this.addForm.get('phone')!.hasError('required') && this.isFormSubmitted" class="text-warning">
+      Phone number is required</div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="onClose()">Save</button>
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Cancel</button>
+</div>

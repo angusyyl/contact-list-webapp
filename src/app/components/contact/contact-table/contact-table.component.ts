@@ -1,10 +1,12 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SortableDirective } from 'src/app/directives/sortable.directive';
+import { SortableDirective, SortColumn, SortDirection } from 'src/app/directives/sortable.directive';
 import { SortEvent } from 'src/app/interfaces/sort-event';
 import { CONTACTS } from 'src/app/shared/mock-contacts';
 import { CommonService } from 'src/app/shared/utils/common.service';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalAddContactComponent } from '../modal-add-contact/modal-add-contact.component';
 
 @Component({
   selector: 'app-contact-table',
@@ -14,19 +16,31 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 export class ContactTableComponent implements OnInit {
   faFilter = faFilter;
 
-  contacts = CONTACTS;
+  // full list of contacts without filtering
+  fullContacts = CONTACTS;
+  // filtered contacts to display
+  filteredContacts = CONTACTS;
+  // current column being sorted
+  sortedCol: SortColumn = '';
+  // current state of sorted direction
+  sortedDir: SortDirection = '';
+  // current state of filtering
+  isFilterOn = false;
+
   @ViewChildren(SortableDirective) headers: QueryList<SortableDirective> | undefined;
 
   filterForm = new FormGroup({
     "filter": new FormControl(null)
   });
 
-  constructor(private commonService: CommonService) { }
+  constructor(private commonService: CommonService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
   }
 
   onSort({ column, direction }: SortEvent) {
+    this.sortedCol = column;
+    this.sortedDir = direction;
 
     // resetting other headers
     this.headers!.forEach(header => {
@@ -37,22 +51,49 @@ export class ContactTableComponent implements OnInit {
 
     // sorting contacts
     if (direction === '' || column === '') {
-      this.contacts = CONTACTS;
+      if (this.isFilterOn) {
+        const filterVal = this.filterForm.get('filter')!.value;
+        this.filterContacts(filterVal);
+      } else {
+        this.filteredContacts = this.fullContacts;
+      }
     } else {
-      this.contacts = [...CONTACTS].sort((a, b) => {
+      this.filteredContacts = [...this.filteredContacts].sort((a, b) => {
         const res = this.commonService.compare(a[column], b[column]);
         return direction === 'asc' ? res : -res;
       });
     }
   }
 
+  /**
+   * Show the contacts that have a Last name that contain the text on the filter input
+   * @param filterVal input text to filter on the Last Name column
+   */
+  filterContacts(filterVal: string): void {
+    this.filteredContacts = filterVal ? this.fullContacts.filter(contact => contact.lastName.toUpperCase().includes(filterVal.toUpperCase())) : this.fullContacts;
+  }
+
   onFilter() {
+    this.isFilterOn = true;
     const filterVal = this.filterForm.get('filter')!.value;
-    this.contacts = filterVal ? CONTACTS.filter(contact => contact.lastName.includes(this.filterForm.get('filter')!.value)) : CONTACTS;
+    this.filterContacts(filterVal);
+    this.onSort({ column: this.sortedCol, direction: this.sortedDir });
   }
 
   onClear() {
+    // reset the filter state
+    this.isFilterOn = false;
+    // reset the filter input text
     this.filterForm.reset();
-    this.onFilter();
+    this.filteredContacts = this.fullContacts;
+    this.onSort({ column: this.sortedCol, direction: this.sortedDir });
+  }
+
+  onOpenModal() {
+    const modalRef = this.modalService.open(ModalAddContactComponent, { centered: true });
+    modalRef.result.then(
+      (result: { firstName: string, lastName: string, email: string, phone: string }) => this.fullContacts.push({ 'firstName': result.firstName, lastName: result.lastName, email: result.email, phone: result.phone })
+      , _ => ''
+    );
   }
 }

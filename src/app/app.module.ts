@@ -9,6 +9,7 @@ import { ContactContainerComponent } from './components/contact/contact-containe
 import { SortableDirective } from './directives/sortable.directive';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ModalAddContactComponent } from './components/contact/modal-add-contact/modal-add-contact.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     NavbarComponent,
     ContactTableComponent,
     ContactContainerComponent,
-    SortableDirective
+    SortableDirective,
+    ModalAddContactComponent
   ],
   imports: [
     BrowserModule,
