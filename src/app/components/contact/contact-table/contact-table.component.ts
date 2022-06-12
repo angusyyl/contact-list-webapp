@@ -38,6 +38,10 @@ export class ContactTableComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * An event handler to sort the clicked table headers.
+   * @param param0
+   */
   onSort({ column, direction }: SortEvent) {
     this.sortedCol = column;
     this.sortedDir = direction;
@@ -66,13 +70,16 @@ export class ContactTableComponent implements OnInit {
   }
 
   /**
-   * Show the contacts that have a Last name that contain the text on the filter input
+   * Show the contacts that have a Last name that contain the text on the filter input.
    * @param filterVal input text to filter on the Last Name column
    */
   filterContacts(filterVal: string): void {
     this.filteredContacts = filterVal ? this.fullContacts.filter(contact => contact.lastName.toUpperCase().includes(filterVal.toUpperCase())) : this.fullContacts;
   }
 
+  /**
+   * An event handler to filter shown contacts when clicked the filter button.
+   */
   onFilter() {
     this.isFilterOn = true;
     const filterVal = this.filterForm.get('filter')!.value;
@@ -80,6 +87,9 @@ export class ContactTableComponent implements OnInit {
     this.onSort({ column: this.sortedCol, direction: this.sortedDir });
   }
 
+  /**
+   * An event handler to clear filtering when clicked the Clear Filter button.
+   */
   onClear() {
     // reset the filter state
     this.isFilterOn = false;
@@ -89,6 +99,9 @@ export class ContactTableComponent implements OnInit {
     this.onSort({ column: this.sortedCol, direction: this.sortedDir });
   }
 
+  /**
+   * An event handler to open a modal to add new contact when clicked Add contact button.
+   */
   onOpenModal() {
     const modalRef = this.modalService.open(ModalAddContactComponent, { centered: true });
     modalRef.result.then(

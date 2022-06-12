@@ -9,6 +9,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ModalAddContactComponent implements OnInit {
 
+  // the state of whether the form has been submitted
   isFormSubmitted = false;
 
   addForm = new FormGroup({
@@ -23,6 +24,9 @@ export class ModalAddContactComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Close the modal with resolved promise.
+   */
   onClose(): void {
     this.isFormSubmitted = true;
 
