@@ -62,7 +62,7 @@ export class ContactTableComponent implements OnInit {
         this.filteredContacts = this.fullContacts;
       }
     } else {
-      this.filteredContacts = [...this.filteredContacts].sort((a, b) => {
+      this.filteredContacts = [...(this.isFilterOn ? this.filteredContacts : this.fullContacts)].sort((a, b) => {
         const res = this.commonService.compare(a[column], b[column]);
         return direction === 'asc' ? res : -res;
       });
@@ -105,7 +105,16 @@ export class ContactTableComponent implements OnInit {
   onOpenModal() {
     const modalRef = this.modalService.open(ModalAddContactComponent, { centered: true });
     modalRef.result.then(
-      (result: { firstName: string, lastName: string, email: string, phone: string }) => this.fullContacts.push({ 'firstName': result.firstName, lastName: result.lastName, email: result.email, phone: result.phone })
+      (result: { firstName: string, lastName: string, email: string, phone: string }) => {
+        this.fullContacts.push({ 'firstName': result.firstName, lastName: result.lastName, email: result.email, phone: result.phone })
+        if (this.isFilterOn) {
+          // keep the filtered and sorted state
+          this.onFilter();
+        } else {
+          // keep the sorted state
+          this.onSort({ column: this.sortedCol, direction: this.sortedDir });
+        }
+      }
       , _ => ''
     );
   }
