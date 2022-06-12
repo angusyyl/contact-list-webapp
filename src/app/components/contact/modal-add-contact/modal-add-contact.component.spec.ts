@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ModalAddContactComponent } from './modal-add-contact.component';
 
@@ -8,9 +9,11 @@ describe('ModalAddContactComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalAddContactComponent ]
+      declarations: [ModalAddContactComponent],
+      imports: [NgbModalModule],
+      providers: [NgbActiveModal]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
